@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -51,7 +52,10 @@ func (d *Daemon) readSensors() {
 			continue
 		}
 
-		c, err := strconv.ParseFloat(string(value[:]), 64)
+		stringValue := string(value[:])
+		stringValue = strings.Trim(stringValue, "\n")
+
+		c, err := strconv.ParseFloat(stringValue, 64)
 		if err != nil {
 			d.Logger.Error(err.Error())
 			continue

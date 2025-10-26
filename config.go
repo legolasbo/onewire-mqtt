@@ -15,7 +15,7 @@ type Sensor struct {
 type Config struct {
 	ClientId       string   `yaml:"client-id"`
 	MQTTBroker     string   `yaml:"mqtt-broker"`
-	MQTTBrokerPort int      `yaml:"mqtt_broker-port"`
+	MQTTBrokerPort int      `yaml:"mqtt-broker-port"`
 	MQTTUser       string   `yaml:"mqtt-user"`
 	MQTTPassword   string   `yaml:"mqtt-password"`
 	Sensors        []Sensor `yaml:"sensors"`

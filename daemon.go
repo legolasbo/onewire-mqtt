@@ -106,6 +106,7 @@ func createDaemon(config Config, logger Logger) Daemon {
 
 	d.sensors = loadSensorConfiguration(config, ids)
 	validateSensors(d.sensors)
+	logger.Info("Sensors loaded")
 
 	return d
 }
@@ -122,7 +123,7 @@ func validateSensors(sensors []Sensor) {
 }
 
 func loadSensorConfiguration(config Config, ids []string) []Sensor {
-	var sensorMap map[string]Sensor
+	sensorMap := make(map[string]Sensor, len(ids))
 	for _, id := range ids {
 		sensorMap[id] = Sensor{SensorId: id}
 	}

@@ -5,10 +5,10 @@ import (
 	"strings"
 )
 
-const DEFAULT_CONFIG_PATH = "/etc/onewire-mqtt/config.yml"
+const DefaultConfigPath = "/etc/onewire-mqtt/config.yml"
 
 func main() {
-	configPath := DEFAULT_CONFIG_PATH
+	configPath := DefaultConfigPath
 	if len(os.Args) > 1 {
 		configPath = os.Args[len(os.Args)-1]
 	}

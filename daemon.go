@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"log"
@@ -31,41 +30,17 @@ func (d *Daemon) Start() {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
 
-	expireTicker := time.NewTicker(time.Duration(d.Config.UpdatePeriod*100) * time.Second)
 	updateTicker := time.NewTicker(time.Duration(d.Config.UpdatePeriod) * time.Second)
 
-	d.configureHomeAssistant()
 	for {
 		select {
 		case <-signals:
 			return
-		case <-expireTicker.C:
-			go d.configureHomeAssistant()
-			break
 		case <-updateTicker.C:
 			go d.readSensors()
 			break
 		}
 	}
-}
-
-func (d *Daemon) configureHomeAssistant() {
-	if !d.Config.HomeAssistant {
-		return
-	}
-
-	for _, sensor := range d.sensors {
-		d.publishHomeAssistantConfig(sensor.HomeAssistantConfig(d.Config))
-	}
-}
-
-func (d *Daemon) publishHomeAssistantConfig(topic string, config HomeAssistantConfig) {
-	val, err := json.Marshal(config)
-	if err != nil {
-		d.Logger.Warn(err.Error())
-		return
-	}
-	d.publish(topic, string(val))
 }
 
 func (d *Daemon) readSensors() {
@@ -82,7 +57,7 @@ func (d *Daemon) readSensors() {
 			continue
 		}
 
-		d.publish(fmt.Sprintf("%s/%s/%s/%s", d.Config.Prefix, d.Config.ClientId, "temperature", sensor), fmt.Sprintf("%.2f", c))
+		d.publish(fmt.Sprintf("home/sensors/temperature/%s", sensor.Alias), fmt.Sprintf("%.2f", c))
 	}
 }
 

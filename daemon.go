@@ -61,7 +61,7 @@ func (d *Daemon) readSensors() {
 			continue
 		}
 
-		d.publish(fmt.Sprintf("home/sensors/temperature/%s", sensor.Alias), fmt.Sprintf("%.2f", c))
+		d.publish(fmt.Sprintf("home/sensors/temperature/%s", sensor.Alias), fmt.Sprintf("%.2f", c/1000))
 	}
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 	"strings"
 )
@@ -28,8 +29,10 @@ func LocateConnectedSensors(logger Logger) ([]string, error) {
 		logger.Error("Unable to detect onewire sensor id's, are you sure you've enabled the w1-gpio overlay?")
 		return nil, err
 	}
+	log.Printf("[INFO]: Read slaves: %s", string(data))
 
 	sensors := strings.Split(string(data), "\n")
+	log.Printf("[INFO]: Found sensors: %s", sensors)
 	if len(sensors) > 0 {
 		sensors = sensors[:len(sensors)-1]
 	}

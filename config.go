@@ -7,9 +7,10 @@ import (
 )
 
 type Sensor struct {
-	SensorId string `yaml:"id"`
-	MqttId   string `yamls:"mqttId"`
-	Alias    string `yaml:"alias"`
+	SensorId string  `yaml:"id"`
+	MqttId   string  `yamls:"mqttId"`
+	Alias    string  `yaml:"alias"`
+	Offset   float64 `yaml:"offset"`
 }
 
 type Config struct {

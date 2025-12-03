@@ -83,14 +83,13 @@ func createDaemon(config Config, logger Logger) Daemon {
 		log.Fatalln(err)
 	}
 
-	d.sensors = loadSensorConfiguration(config, ids)
-	validateSensors(d.sensors)
+	d.sensors = validateSensors(loadSensorConfiguration(config, ids))
 	logger.Info("Sensors loaded")
 
 	return d
 }
 
-func validateSensors(sensors []Sensor) {
+func validateSensors(sensors []Sensor) []Sensor {
 	for _, sensor := range sensors {
 		if sensor.Alias == "" {
 			sensor.Alias = sensor.SensorId
@@ -99,12 +98,13 @@ func validateSensors(sensors []Sensor) {
 			sensor.MqttId = sensor.SensorId
 		}
 	}
+	return sensors
 }
 
 func loadSensorConfiguration(config Config, ids []string) []Sensor {
 	sensorMap := make(map[string]Sensor, len(ids))
 	for _, id := range ids {
-		sensorMap[id] = Sensor{SensorId: id}
+		sensorMap[id] = Sensor{SensorId: id, MqttId: id, Alias: id}
 	}
 
 	for _, sensor := range config.Sensors {

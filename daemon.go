@@ -55,15 +55,19 @@ func (d *Daemon) readSensors() {
 		stringValue := string(value[:])
 		stringValue = strings.Trim(stringValue, "\n")
 
-		c, err := strconv.ParseFloat(stringValue, 64)
+		raw, err := strconv.ParseFloat(stringValue, 64)
 		if err != nil {
 			d.Logger.Error(err.Error())
 			continue
 		}
-		c /= 1000
-		c += sensor.Offset
+		divided := raw / 1000
+		offset := divided + sensor.Offset
 
-		d.publish(fmt.Sprintf("home/sensors/temperature/%s", sensor.Alias), fmt.Sprintf("%.2f", c))
+		if sensor.SensorId == "28-0000006ce647" {
+			log.Printf("Sensor %s had raw value %f, divided value %f and offset value %f\n", sensor.SensorId, raw, divided, offset)
+		}
+
+		d.publish(fmt.Sprintf("home/sensors/temperature/%s", sensor.Alias), fmt.Sprintf("%.2f", offset))
 	}
 }
 

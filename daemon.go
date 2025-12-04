@@ -60,10 +60,10 @@ func (d *Daemon) readSensors() {
 			d.Logger.Error(err.Error())
 			continue
 		}
-
+		c /= 1000
 		c += sensor.Offset
 
-		d.publish(fmt.Sprintf("home/sensors/temperature/%s", sensor.Alias), fmt.Sprintf("%.2f", c/1000))
+		d.publish(fmt.Sprintf("home/sensors/temperature/%s", sensor.Alias), fmt.Sprintf("%.2f", c))
 	}
 }
 

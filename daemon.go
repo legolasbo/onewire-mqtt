@@ -46,29 +46,29 @@ func (d *Daemon) Start() {
 
 func (d *Daemon) readSensors() {
 	for _, sensor := range d.sensors {
-		value, err := os.ReadFile("/sys/bus/w1/devices/" + sensor.SensorId + "/temperature")
-		if err != nil {
-			d.Logger.Error(err.Error())
-			continue
-		}
-
-		stringValue := string(value[:])
-		stringValue = strings.Trim(stringValue, "\n")
-
-		raw, err := strconv.ParseFloat(stringValue, 64)
-		if err != nil {
-			d.Logger.Error(err.Error())
-			continue
-		}
-		divided := raw / 1000
-		offset := divided + sensor.Offset
-
-		if sensor.SensorId == "28-0000006ce647" {
-			log.Printf("Sensor %s had raw value %f, divided value %f and offset value %f\n", sensor.SensorId, raw, divided, offset)
-		}
-
-		d.publish(fmt.Sprintf("home/sensors/temperature/%s", sensor.Alias), fmt.Sprintf("%.2f", offset))
+		go d.readSensor(sensor)
 	}
+}
+
+func (d *Daemon) readSensor(sensor Sensor) {
+	value, err := os.ReadFile("/sys/bus/w1/devices/" + sensor.SensorId + "/temperature")
+	if err != nil {
+		d.Logger.Error(err.Error())
+		return
+	}
+
+	stringValue := string(value[:])
+	stringValue = strings.Trim(stringValue, "\n")
+
+	raw, err := strconv.ParseFloat(stringValue, 64)
+	if err != nil {
+		d.Logger.Error(err.Error())
+		return
+	}
+	divided := raw / 1000
+	offset := divided + sensor.Offset
+
+	d.publish(fmt.Sprintf("home/sensors/temperature/%s", sensor.Alias), fmt.Sprintf("%.2f", offset))
 }
 
 func (d *Daemon) publish(topic string, msg string) mqtt.Token {

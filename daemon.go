@@ -46,7 +46,7 @@ func (d *Daemon) Start() {
 
 func (d *Daemon) readSensors() {
 	for _, sensor := range d.sensors {
-		go d.readSensor(sensor)
+		d.readSensor(sensor)
 	}
 }
 

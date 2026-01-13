@@ -60,6 +60,10 @@ func (d *Daemon) readSensor(sensor Sensor) {
 	stringValue := string(value[:])
 	stringValue = strings.Trim(stringValue, "\n")
 
+	if stringValue == "" {
+		return
+	}
+
 	raw, err := strconv.ParseFloat(stringValue, 64)
 	if err != nil {
 		d.Logger.Error(err.Error())
